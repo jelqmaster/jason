@@ -484,7 +484,7 @@ function mainPremium()
         Default = "1",
         Options = options,
         Callback = function(stop)
-            selectedStop = stop
+            selectedStop = tonumber(stop)
         end    
     })    
 
