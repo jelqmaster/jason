@@ -455,6 +455,47 @@ function mainPremium()
         }
     )
 
+    local Section =
+        Tab5:AddSection(
+        {
+            Name = "Auto Flag Achievement"
+        }
+    )
+    Tab5:AddParagraph(
+        "IMPORTANT READ!",
+        "Auto Place 20 Flags Down in each zone, go to zone 1 and then toggle script."
+    )
+
+    Tab5:AddDropdown({
+        Name = "Flags",
+        Default = "None",
+        Options = {"None", "Hasty Flag", "Diamonds Flag", "Coins Flag", "Magnet Flag"},
+        Callback = function(option)
+            selectedFlag = option
+        end    
+    })
+    local options = {}
+    for i = 1, 99 do
+        table.insert(options, tostring(i))
+    end
+    
+    Tab5:AddDropdown({
+        Name = "Zone to Stop At",
+        Default = "1",
+        Options = options,
+        Callback = function(stop)
+            selectedStop = stop
+        end    
+    })    
+
+    Tab5:AddButton(
+        {
+            Name = "Auto Flag!",
+            Callback = function()
+                autoFlag()
+            end
+        }
+    )
     OrionLib:Init()
 
     function antiAFK()
@@ -1186,6 +1227,53 @@ end)
 spawn(function()
     destroyNearbyObjects(CFrame.new(214.122131, 24.4171562, -587.119263), "1 | Spawn")
 end)
+
+function autoFlag()
+    local saveModule = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+    local result = saveModule.Get()
+    local Flags = result.Inventory.Misc
+    local flaguid
+    
+    for i, v in pairs(Flags) do
+        if v.id == selectedFlag then
+            flaguid = i
+            break
+        end
+    end
+    
+    local shit = {}
+    
+    for _, v in pairs(game.Workspace.Map:GetChildren()) do
+        if v.Name ~= "SHOP" then
+            table.insert(shit, v.Name)
+        end
+    end
+    
+    local function extractNumber(str)
+        local num = str:match("%d+")
+        return tonumber(num) or 0
+    end
+    
+    table.sort(shit, function(a, b)
+        return extractNumber(a) < extractNumber(b)
+    end)
+    
+    for _, zoneName in ipairs(shit) do
+        for _, v in pairs(game.Workspace.Map:GetDescendants()) do
+            if v.Name == "BREAK_ZONE" and v.Parent.Parent.Parent.Name == zoneName then
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame + Vector3.new(0, 5, 0)
+                task.wait(0.1)
+                for i = 1, 20 do
+                game:GetService("ReplicatedStorage").Network:FindFirstChild("Flags: Consume"):InvokeServer(selectedFlag, flaguid)            
+                end
+            end
+        end
+    
+        if extractNumber(zoneName) == selectedStop then
+            break
+        end
+    end
+end
 end
 
 mainPremium()
