@@ -1183,6 +1183,9 @@ end)
 spawn(function()
     destroyNearbyObjects(CFrame.new(574.262878, 13.4520512, 3284.75342), "70 | No Path Forest")
 end)
+spawn(function()
+    destroyNearbyObjects(CFrame.new(214.122131, 24.4171562, -587.119263), "1 | Spawn")
+end)
 end
 
 mainPremium()
