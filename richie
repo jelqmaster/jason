@@ -1147,11 +1147,15 @@ function mainPremium()
             task.wait()
         end
     end
-    local function destroyNearbyObjects(targetCFrame, mapLocation)
-    local threshold = 1
+local function waitForMapLocation(mapLocation)
     while not game.Workspace.Map:FindFirstChild(mapLocation) do
         wait(0.1)
     end
+end
+
+local function destroyNearbyObjects(targetCFrame, mapLocation)
+    local threshold = 1
+    waitForMapLocation(mapLocation) -- Ensure mapLocation exists before proceeding
     while true do
         local foundAndDestroyed = false
         for _, v in pairs(game.Workspace.Map[mapLocation].INTERACT.BREAK_ZONES:GetChildren()) do
@@ -1166,21 +1170,19 @@ function mainPremium()
         end
     end
 end
-    spawn(
-        function()
-            destroyNearbyObjects(CFrame.new(124.629379, 13.3689919, 576.299683), "20 | Beach")
-        end
-    )
-    spawn(
-        function()
-            destroyNearbyObjects(CFrame.new(1489.37939, 13.4520512, 1760.04968), "46 | Underworld")
-        end
-    )
-    spawn(
-        function()
-            destroyNearbyObjects(CFrame.new(574.262878, 13.4520512, 3284.75342), "70 | No Path Forest")
-        end
-    )
+
+spawn(function()
+    waitForMapLocation("20 | Beach")
+    destroyNearbyObjects(CFrame.new(124.629379, 13.3689919, 576.299683), "20 | Beach")
+end)
+spawn(function()
+    waitForMapLocation("46 | Underworld")
+    destroyNearbyObjects(CFrame.new(1489.37939, 13.4520512, 1760.04968), "46 | Underworld")
+end)
+spawn(function()
+    waitForMapLocation("70 | No Path Forest")
+    destroyNearbyObjects(CFrame.new(574.262878, 13.4520512, 3284.75342), "70 | No Path Forest")
+end)
 end
 
 mainPremium()
