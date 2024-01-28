@@ -1263,7 +1263,7 @@ function autoFlag()
             if v.Name == "BREAK_ZONE" and v.Parent.Parent.Parent.Name == zoneName then
                 game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = v.CFrame + Vector3.new(0, 5, 0)
                 task.wait(0.1)
-                for i = 1, 20 do
+                for i = 1, 24 do
                 game:GetService("ReplicatedStorage").Network:FindFirstChild("Flags: Consume"):InvokeServer(selectedFlag, flaguid)            
                 end
             end
