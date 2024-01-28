@@ -1150,28 +1150,26 @@ function mainPremium()
 local function destroyNearbyObjects(targetCFrame, mapLocation)
     local threshold = 1
 
-    while not game.Workspace.Map:FindFirstChild(mapLocation) do
-        wait(0.1)
-    end
-
-    local mapLocationObject = game.Workspace.Map[mapLocation]
-    while not mapLocationObject:FindFirstChild("INTERACT") do
-        wait(0.1)
-    end
-
     while true do
-        local interactObject = mapLocationObject.INTERACT
-        if interactObject:FindFirstChild("BREAK_ZONES") then
-            local breakZones = interactObject.BREAK_ZONES
-            for _, v in pairs(breakZones:GetChildren()) do
-                if v:IsA("BasePart") then
-                    local distance = (v.CFrame.Position - targetCFrame.Position).Magnitude
-                    if distance <= threshold then
-                        v:Destroy()
+        local success, mapLocationObject = pcall(function()
+            return game.Workspace.Map[mapLocation]
+        end)
+
+        if success and mapLocationObject and mapLocationObject:FindFirstChild("INTERACT") then
+            local interactObject = mapLocationObject.INTERACT
+            if interactObject:FindFirstChild("BREAK_ZONES") then
+                local breakZones = interactObject.BREAK_ZONES
+                for _, v in pairs(breakZones:GetChildren()) do
+                    if v:IsA("BasePart") then
+                        local distance = (v.CFrame.Position - targetCFrame.Position).Magnitude
+                        if distance <= threshold then
+                            v:Destroy()
+                        end
                     end
                 end
             end
         end
+
         wait(0.1)
     end
 end
