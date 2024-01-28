@@ -1148,21 +1148,24 @@ function mainPremium()
         end
     end
     local function destroyNearbyObjects(targetCFrame, mapLocation)
-        local threshold = 1
-        while true do
-            local foundAndDestroyed = false
-            for _, v in pairs(game.Workspace.Map[mapLocation].INTERACT.BREAK_ZONES:GetChildren()) do
-                local distance = (v.CFrame.Position - targetCFrame.Position).Magnitude
-                if distance <= threshold then
-                    v:Destroy()
-                    foundAndDestroyed = true
-                end
-            end
-            if not foundAndDestroyed then
-                wait(0.1)
+    local threshold = 1
+    while not game.Workspace.Map:FindFirstChild(mapLocation) do
+        wait(0.1)
+    end
+    while true do
+        local foundAndDestroyed = false
+        for _, v in pairs(game.Workspace.Map[mapLocation].INTERACT.BREAK_ZONES:GetChildren()) do
+            local distance = (v.CFrame.Position - targetCFrame.Position).Magnitude
+            if distance <= threshold then
+                v:Destroy()
+                foundAndDestroyed = true
             end
         end
+        if not foundAndDestroyed then
+            wait(0.1)
+        end
     end
+end
     spawn(
         function()
             destroyNearbyObjects(CFrame.new(124.629379, 13.3689919, 576.299683), "20 | Beach")
