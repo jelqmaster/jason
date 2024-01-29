@@ -346,9 +346,9 @@ function mainPremium()
     for _, v in pairs(game:GetService("ReplicatedStorage").__DIRECTORY.Eggs["Zone Eggs"]:GetChildren()) do
         if v:IsA("ModuleScript") then
             local noShit = v.Name:sub(5, -1)
-            local eggName = noShit:gsub("^%s+", "")
+            local eggTitle = noShit:gsub("^%s+", "")
 
-            table.insert(eggs_table, eggName)
+            table.insert(eggs_table, eggTitle)
         end
     end
 
