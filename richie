@@ -80,15 +80,6 @@ function mainPremium()
         }
     )
 
-    local Tab6 =
-            Window:MakeTab(
-            {
-                Name = "VIP Features 2",
-                Icon = "rbxassetid://4483345998",
-                PremiumOnly = false
-            }
-        )
-
     local Section =
         Tab:AddSection(
         {
@@ -505,23 +496,6 @@ function mainPremium()
             end
         }
     )
-
-local Section =
-    Tab6:AddSection(
-        {
-            Name = "Minigames"
-        }
-    )
-
-    Tab6:AddButton(
-        {
-            Name = "Classic Obby",
-            Callback = function()
-                classicObby()
-            end
-        }
-    )
-
     OrionLib:Init()
 
     function antiAFK()
@@ -1300,19 +1274,6 @@ function autoFlag()
         end
     end
 end
-
-function classicObby()
-    game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(914.923523, 23.4310474, -211.970032)
-    task.wait(3)
-    for _, v in pairs(game.Workspace.__THINGS.__INSTANCE_CONTAINER.Active:GetChildren()) do
-        if v.Name == "SpawnObby" then
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame + Vector3.new(20,0,0)
-            task.wait(3)
-            game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(184.661621, 144.304489, -2885.19507)
-        end
-    end
-end
-
 end
 
 mainPremium()
