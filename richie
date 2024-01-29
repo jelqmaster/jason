@@ -463,7 +463,7 @@ function mainPremium()
     )
     Tab5:AddParagraph(
         "IMPORTANT READ!",
-        "Auto Place 20 Flags Down in each zone, go to zone 1 and then toggle script."
+        "Auto Place 24 Flags Down in each zone, go to zone 1 and then toggle script."
     )
 
     Tab5:AddDropdown({
