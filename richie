@@ -53,6 +53,15 @@ function mainPremium()
         }
     )
 
+    local Eggs =
+        Window:MakeTab(
+        {
+            Name = "Eggs",
+            Icon = "rbxassetid://4483345998",
+            PremiumOnly = false
+        }
+    )
+
     local Tab4 =
         Window:MakeTab(
         {
@@ -323,6 +332,57 @@ function mainPremium()
         }
     )
 
+    Eggs:AddTextbox({
+        Name = "Amount to Hatch",
+        Default = "",
+        TextDisappear = false,
+        Callback = function(egg)
+            eggAmount = tonumber(egg)
+        end	  
+    })
+
+    eggs_table = {}
+
+    for _, v in pairs(game:GetService("ReplicatedStorage").__DIRECTORY.Eggs["Zone Eggs"]:GetChildren()) do
+        if v:IsA("ModuleScript") then
+            local noShit = v.Name:sub(5, -1)
+            local eggName = noShit:gsub("^%s+", "")
+
+            table.insert(eggs_table, eggName)
+        end
+    end
+
+    dropdownOptions = {}
+
+    for _, v in pairs(eggs_table) do
+        table.insert(dropdownOptions, v)
+    end
+
+    Eggs:AddDropdown({
+        Name = "Egg",
+        Default = "None",
+        Options = dropdownOptions,
+        Callback = function(eName)
+            eggName = eName
+        end    
+    })
+
+    Eggs:AddToggle({
+        Name = "Auto Hatch Eggs",
+        Default = false,
+        Callback = function(v)
+            Config.autoEgg = v
+            spawn(autoEgg)
+        end    
+    })
+
+    Eggs:AddButton({
+        Name = "No Hatch Animation",
+        Callback = function()
+                aniOff()
+          end    
+    })
+
     Misc:AddButton(
         {
             Name = "AntiAFK",
@@ -497,6 +557,21 @@ function mainPremium()
         }
     )
     OrionLib:Init()
+
+    function autoEgg()
+        while task.wait() and Config.autoEgg do
+            local args = {
+                [1] = eggName,
+                [2] = eggAmount
+            }
+            
+            game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_RequestPurchase"):InvokeServer(unpack(args))        
+        end
+    end
+
+    function aniOff()
+        local Eggs = game.Players.LocalPlayer.PlayerScripts.Scripts.Game['Egg Opening Frontend']getsenv(Eggs).PlayEggAnimation = function() return end
+    end
 
     function antiAFK()
         local VirtualInputManager = game:GetService("VirtualInputManager")
