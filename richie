@@ -91,7 +91,7 @@ function mainPremium()
         }
     )
 
-    Info:AddParagraph("BEWARE!","If you paid USD or more than 1m gems for this script you got scammed.")
+    Info:AddParagraph("BEWARE!","If you paid real money or more than 1m gems for this script you got scammed.")
 
     local Section =
         Tab:AddSection(
