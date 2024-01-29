@@ -506,6 +506,13 @@ function mainPremium()
         }
     )
 
+local Section =
+    Tab6:AddSection(
+        {
+            Name = "Minigames"
+        }
+    )
+
     Tab6:AddButton(
         {
             Name = "Classic Obby",
