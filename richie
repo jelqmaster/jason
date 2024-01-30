@@ -533,6 +533,8 @@ function mainPremium()
         }
     )
 
+    Tab6:AddParagraph("IMPORTANT!","Try not to toggle it on and off too many times, also rapid toggling might break the script.")
+
     local optionz = {}
     for i = 1, 112 do
         table.insert(optionz, tostring(i))
