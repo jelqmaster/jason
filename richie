@@ -91,6 +91,15 @@ function mainPremium()
         }
     )
 
+    local Tab6 =
+        Window:MakeTab(
+        {
+            Name = "VIP Features 2",
+            Icon = "rbxassetid://4483345998",
+            PremiumOnly = false
+        }
+    )
+
     Info:AddParagraph("BEWARE!","If you paid real money or more than 1m gems for this script you got scammed.")
     Info:AddLabel("https://discord.gg/Tkbe3Nh8")
     Info:AddButton({
@@ -516,6 +525,71 @@ function mainPremium()
             end
         }
     )
+
+    local Section =
+        Tab6:AddSection(
+        {
+            Name = "Auto Index"
+        }
+    )
+
+    local optionz = {}
+    for i = 1, 112 do
+        table.insert(optionz, tostring(i))
+    end
+    
+    Tab6:AddDropdown({
+        Name = "Egg to start at",
+        Default = "1",
+        Options = optionz,
+        Callback = function(eggStart)
+            selectedStart = tonumber(eggStart)
+        end    
+    })    
+
+    local optionx = {}
+    for i = 1, 112 do
+        table.insert(optionx, tostring(i))
+    end
+    
+    Tab6:AddDropdown({
+        Name = "Egg to end at",
+        Default = "1",
+        Options = optionx,
+        Callback = function(eggStop)
+            selectedMax = tonumber(eggStop)
+        end    
+    })  
+
+    Tab6:AddTextbox({
+        Name = "Egg buy amount",
+        Default = "",
+        TextDisappear = false,
+        Callback = function(eggCount)
+            selectedAmount = tonumber(eggCount)
+        end	  
+    })
+
+    Tab6:AddTextbox({
+        Name = "buy each egg x amount of times",
+        Default = "",
+        TextDisappear = false,
+        Callback = function(eggX)
+            eggTimes = tonumber(eggX)
+        end	  
+    })
+
+    Tab6:AddToggle(
+        {
+            Name = "Auto Index",
+            Default = false,
+            Callback = function(v)
+                Config.autoIndex = v
+                spawn(autoIndex)
+            end
+        }
+    )
+
     OrionLib:Init()
 
     function antiAFK()
@@ -1292,6 +1366,81 @@ function autoFlag()
         if extractNumber(zoneName) == selectedStop then
             break
         end
+    end
+end
+
+function autoIndex()
+    local Eggs = game.Players.LocalPlayer.PlayerScripts.Scripts.Game['Egg Opening Frontend']getsenv(Eggs).PlayEggAnimation = function() return end
+
+    getgenv().startEggNumber = selectedStart
+    getgenv().maxEggNumber = selectedMax
+    local eggAmount = selectedAmount
+    local openingsPerEgg = eggTimes
+    
+    local function getEggCentersAndNames()
+        local eggCenters = {}
+        local eggNames = {}
+    
+        for _, v in pairs(game.Workspace.__THINGS.Eggs.Main:GetDescendants()) do
+            if v.Name == "Center" then
+                local numStr = v.Parent.Name:match("(%d+)")
+                if numStr then
+                    local num = tonumber(numStr)
+                    eggCenters[num] = v
+                end
+            end
+        end
+    
+        for _, v in pairs(game.ReplicatedStorage.__DIRECTORY.Eggs["Zone Eggs"]:GetDescendants()) do
+            if v:IsA("ModuleScript") then
+                local nameStr = v.Name:match("(%d+) | (.+)")
+                if nameStr then
+                    local num, name = v.Name:match("(%d+) | (.+)")
+                    if num and name then
+                        num = tonumber(num)
+                        eggNames[num] = name
+                    end
+                end
+            end
+        end
+    
+        return eggCenters, eggNames
+    end
+    
+    local function handleEgg(eggNumber, openings, eggCenters, eggNames)
+        local center = eggCenters[eggNumber]
+        local name = eggNames[eggNumber]
+    
+        if center and name then
+            for i = 1, openings do
+                if not Config.autoIndex then return end
+                game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = center.CFrame
+                task.wait(0.5)
+                local args = {
+                    [1] = name,
+                    [2] = eggAmount
+                }
+                game:GetService("ReplicatedStorage"):WaitForChild("Network"):WaitForChild("Eggs_RequestPurchase"):InvokeServer(unpack(args))
+                wait(2)
+            end
+        else
+            print("Error occurred.")
+        end
+    end
+    
+    while true do
+        if Config.autoIndex then
+            local eggCenters, eggNames = getEggCentersAndNames()
+            local currentEggNumber = getgenv().startEggNumber
+    
+            while currentEggNumber <= getgenv().maxEggNumber and Config.autoIndex do
+                handleEgg(currentEggNumber, openingsPerEgg, eggCenters, eggNames)
+                currentEggNumber = currentEggNumber + 1
+                wait()
+            end
+        else
+        end
+        wait(1)
     end
 end
 end
