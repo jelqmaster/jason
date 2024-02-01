@@ -361,6 +361,24 @@ function mainPremium()
         }
     )
 
+    Misc:AddButton(
+        {
+            Name = "Whitescreen ON",
+            Callback = function()
+                turnWhiteScreenOn()
+            end
+        }
+    )
+
+    Misc:AddButton(
+        {
+            Name = "Whitescreen OFF",
+            Callback = function()
+                turnWhiteScreenOff()
+            end
+        }
+    )
+
     Tab5:AddParagraph(
         "INFO",
         "This feature automatically sends gems to your main or another account once you accumulate a set amount, like mailing 1 million gems to your main account after farming them. Fully AFK"
@@ -602,6 +620,26 @@ function mainPremium()
             VirtualInputManager:SendKeyEvent(false, "Space", false, game)
             task.wait(300)
         end
+    end
+
+    local Players = game:GetService("Players")
+    local player = Players.LocalPlayer
+    local playerGui = player:WaitForChild("PlayerGui")
+    
+    local screenGui = Instance.new("ScreenGui")
+    screenGui.Parent = playerGui
+    
+    local frame = Instance.new("Frame")
+    frame.BackgroundColor3 = Color3.new(1, 1, 1)
+    frame.Size = UDim2.new(1, 0, 1, 0)
+    frame.Parent = screenGui
+    
+    local function turnWhiteScreenOn()
+        screenGui.Enabled = true
+    end
+    
+    local function turnWhiteScreenOff()
+        screenGui.Enabled = false
     end
 
     function autoFishA()
