@@ -1411,7 +1411,11 @@ function autoFlag()
 end
 
 function autoIndex()
-    local Eggs = game.Players.LocalPlayer.PlayerScripts.Scripts.Game['Egg Opening Frontend']getsenv(Eggs).PlayEggAnimation = function() return end
+    for _, v in pairs(game.Players.LocalPlayer.PlayerScripts.Scripts.Game:GetChildren()) do
+        if v.Name == "Egg Opening Frontend" then
+            v:Destroy()
+        end
+    end
 
     getgenv().startEggNumber = selectedStart
     getgenv().maxEggNumber = selectedMax
