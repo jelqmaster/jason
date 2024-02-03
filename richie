@@ -1153,6 +1153,7 @@ function mainPremium()
     end
     
     function countHugePets()
+        local Library = require(game.ReplicatedStorage.Library)
         local Save = Library.Save.Get().Inventory
         local AmountOfHuges = 0
         for _, v in pairs(Save.Pet) do
@@ -1218,11 +1219,13 @@ function mainPremium()
 
     function monitorAndNotifyCSIncreases()
         local previousCharmStoneCount = countCharmStones()
-
+        local debounce = false
+    
         while true do
-            if Config.csNotify then
+            if Config.csNotify and not debounce then
                 local currentCharmStoneCount = countCharmStones()
                 if currentCharmStoneCount > previousCharmStoneCount then
+                    debounce = true
                     local embed = {
                         title = "Charm Stone!",
                         description = "You got a charm stone!",
@@ -1230,6 +1233,9 @@ function mainPremium()
                     }
                     sendWebhookMessage(embed)
                     previousCharmStoneCount = currentCharmStoneCount
+    
+                    wait(1)
+                    debounce = false
                 end
             end
             wait(0.5)
@@ -1269,11 +1275,13 @@ function mainPremium()
 
     function monitorAndNotifyMSIncreases()
         local previousMagicShardCount = countMagicShards()
-
+        local debounce = false
+    
         while true do
-            if Config.msNotify then
+            if Config.msNotify and not debounce then
                 local currentMagicShardCount = countMagicShards()
                 if currentMagicShardCount > previousMagicShardCount then
+                    debounce = true
                     local embed = {
                         title = "Magic Shard!",
                         description = "You got a magic shard!",
@@ -1281,11 +1289,14 @@ function mainPremium()
                     }
                     sendWebhookMessage(embed)
                     previousMagicShardCount = currentMagicShardCount
+    
+                    wait(1)
+                    debounce = false
                 end
             end
             wait(0.5)
         end
-    end
+    end   
 
     function sendGems()
         local GetSave = function()
