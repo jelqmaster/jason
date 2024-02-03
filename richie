@@ -455,6 +455,15 @@ function mainPremium()
 
     Misc:AddButton(
         {
+            Name = "Remove Egg Animation",
+            Callback = function()
+                noEggAnimation()
+            end
+        }
+    )
+
+    Misc:AddButton(
+        {
             Name = "Whitescreen ON",
             Callback = function()
                 turnWhiteScreenOn()
@@ -733,6 +742,14 @@ function mainPremium()
             task.wait(.2)
             VirtualInputManager:SendKeyEvent(false, "Space", false, game)
             task.wait(300)
+        end
+    end
+
+    function noEggAnimation()
+        for _, v in pairs(game.Players.LocalPlayer.PlayerScripts.Scripts.Game:GetChildren()) do
+            if v.Name == "Egg Opening Frontend" then
+                v:Destroy()
+            end
         end
     end
 
