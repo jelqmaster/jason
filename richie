@@ -100,6 +100,15 @@ function mainPremium()
         }
     )
 
+    local Craft =
+        Window:MakeTab(
+        {
+            Name = "Auto Craft",
+            Icon = "rbxassetid://4483345998",
+            PremiumOnly = false
+        }
+    )
+
     local Tab5 =
         Window:MakeTab(
         {
@@ -462,6 +471,28 @@ function mainPremium()
         }
     )
 
+    Craft:AddToggle(
+        {
+            Name = "Auto Craft Charm Stone",
+            Default = false,
+            Callback = function(v)
+                Config.autoCharm = v
+                spawn(autoCharm)
+            end
+        }
+    )
+
+    Craft:AddToggle(
+        {
+            Name = "Auto Craft Huge Potion",
+            Default = false,
+            Callback = function(v)
+                Config.autoHuge = v
+                spawn(autoHuge)
+            end
+        }
+    )
+
     Tab5:AddParagraph(
         "INFO",
         "This feature automatically sends gems to your main or another account once you accumulate a set amount, like mailing 1 million gems to your main account after farming them. Fully AFK"
@@ -702,6 +733,18 @@ function mainPremium()
             task.wait(.2)
             VirtualInputManager:SendKeyEvent(false, "Space", false, game)
             task.wait(300)
+        end
+    end
+
+    function autoCharm()
+        while task.wait() and Config.autoCharm do
+            game:GetService("ReplicatedStorage").Network.MagicMachine_Activate:InvokeServer("Charm Stone")
+        end
+    end
+
+    function autoHuge()
+        while task.wait() and Config.autoHuge do
+            game:GetService("ReplicatedStorage").Network.MagicMachine_Activate:InvokeServer("Huge Potion")
         end
     end
 
