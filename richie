@@ -335,6 +335,17 @@ function mainPremium()
         }
     )
 
+    Webhook:AddToggle(
+        {
+            Name = "NOTIFY Lucky Blocks",
+            Default = false,
+            Callback = function(v)
+                Config.lbNotify = v
+                spawn(monitorAndNotifyLBIncreases)
+            end
+        }
+    )
+
     Tab4:AddTextbox(
         {
             Name = "Recipient",
@@ -1297,6 +1308,62 @@ function mainPremium()
             wait(0.5)
         end
     end   
+
+    local saveModule = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+    local HttpService = game:GetService("HttpService")
+    
+    function sendWebhookMessage(embed)
+        local syn = syn or {}
+        local request = syn.request or http_request
+        local success, response = pcall(function()
+            request({
+                Url = webhooklink,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = HttpService:JSONEncode({embeds = {embed}})
+            })
+        end)
+        if not success then
+            warn("Failed to send webhook message:", response)
+        end
+    end
+    
+    function countLuckyBlocks()
+        local result = saveModule.Get()
+        local lb = result.Inventory.Misc
+        local luckyBlockCount = 0
+        for i, v in pairs(lb) do
+            if v.id == "Lucky Block" then
+                luckyBlockCount = luckyBlockCount + (v._am or 1)
+            end
+        end
+        return luckyBlockCount
+    end
+    
+    function monitorAndNotifyLBIncreases()
+        local previousLuckyBlockCount = countLuckyBlocks()
+        local debounce = false
+    
+        while true do
+            if Config.lbNotify and not debounce then
+                local currentLuckyBlockCount = countLuckyBlocks()
+                if currentLuckyBlockCount > previousLuckyBlockCount then
+                    debounce = true
+                    local embed = {
+                        title = "Lucky Block!",
+                        description = "You got a Lucky Block!",
+                        color = 0xFFE900,
+                    }
+                    sendWebhookMessage(embed)
+                    previousLuckyBlockCount = currentLuckyBlockCount
+    
+                    wait(1)
+                    debounce = false
+                end
+            end
+            wait(0.5)
+        end
+    end 
 
     function sendGems()
         local GetSave = function()
