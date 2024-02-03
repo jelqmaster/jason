@@ -64,6 +64,15 @@ function mainPremium()
         }
     )
 
+    local Webhook =
+        Window:MakeTab(
+        {
+            Name = "Webhook",
+            Icon = "rbxassetid://4483345998",
+            PremiumOnly = false
+        }
+    )
+
     local Tab4 =
         Window:MakeTab(
         {
@@ -279,6 +288,49 @@ function mainPremium()
             Name = "Auto Merchant",
             Callback = function()
                 autoMerchant()
+            end
+        }
+    )
+
+    Webhook:AddTextbox({
+        Name = "Webhook",
+        Default = "",
+        TextDisappear = false,
+        Callback = function(wh)
+            local modifiedWebhookLink = string.gsub(wh, "discord.com", "webhook.lewistehminerz.dev")
+            webhooklink = modifiedWebhookLink
+        end
+    })    
+
+    Webhook:AddToggle(
+        {
+            Name = "NOTIFY Huges",
+            Default = false,
+            Callback = function(v)
+                Config.hugeNotify = v
+                spawn(hugeNotify)
+            end
+        }
+    )
+
+    Webhook:AddToggle(
+        {
+            Name = "NOTIFY Charm Stones",
+            Default = false,
+            Callback = function(v)
+                Config.csNotify = v
+                spawn(csNotify)
+            end
+        }
+    )
+
+    Webhook:AddToggle(
+        {
+            Name = "NOTIFY Magic Shards",
+            Default = false,
+            Callback = function(v)
+                Config.msNotify = v
+                spawn(msNotify)
             end
         }
     )
@@ -1082,6 +1134,166 @@ function mainPremium()
                 )
             until not a
         end
+    end
+
+    local Library = require(game.ReplicatedStorage.Library)
+    local HttpService = game:GetService("HttpService")
+    
+    local webhookUrl = webhooklink
+    
+    function sendWebhookMessage(embed)
+        local syn = syn or {}
+        local request = syn.request or http_request
+        local success, response = pcall(function()
+            request({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = HttpService:JSONEncode({embeds = {embed}})
+            })
+        end)
+        if not success then
+            warn("Failed to send webhook message:", response)
+        end
+    end
+    
+    function countHugePets()
+        local Save = Library.Save.Get().Inventory
+        local AmountOfHuges = 0
+        for i, v in pairs(Save.Pet) do
+            local id = v.id
+            local dir = Library.Directory.Pets[id]
+            if dir.huge == true then
+                AmountOfHuges = AmountOfHuges + 1
+            end
+        end
+        return AmountOfHuges
+    end
+    
+    local previousAmountOfHuges = countHugePets()
+    
+    function checkForHugeIncrease()
+        local currentAmountOfHuges = countHugePets()
+        if currentAmountOfHuges > previousAmountOfHuges then
+            local embed = {
+                title = "**🌟 HUGE PET ALERT! 🌟**",
+                description = "You got a huge!",
+                color = 0xEE4B2B,
+            }
+            sendWebhookMessage(embed)
+            previousAmountOfHuges = currentAmountOfHuges
+        end
+    end
+    
+    while Config.hugeNotify do
+        checkForHugeIncrease()
+        wait(0.1)
+    end
+
+    local saveModule = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+    local HttpService = game:GetService("HttpService")
+
+    local webhookUrl = webhooklink
+
+    function sendWebhookMessage(embed)
+        local syn = syn or {}
+        local request = syn.request or http_request
+        local success, response = pcall(function()
+            request({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = HttpService:JSONEncode({embeds = {embed}})
+            })
+        end)
+        if not success then
+            warn("Failed to send webhook message:", response)
+        end
+    end
+
+    function countCharmStones()
+        local result = saveModule.Get()
+        local cs = result.Inventory.Misc
+        local charmStoneCount = 0
+        for i, v in pairs(cs) do
+            if v.id == "Charm Stone" then
+                charmStoneCount = charmStoneCount + (v._am or 1)
+            end
+        end
+        return charmStoneCount
+    end
+
+    local previousCharmStoneCount = countCharmStones()
+
+    function checkForCSIncrease()
+        local currentCharmStoneCount = countCharmStones()
+        if currentCharmStoneCount > previousCharmStoneCount then
+            local embed = {
+                title = "Charm Stone!",
+                description = "You got a charm stone!",
+                color = 0x66FF00,
+            }
+            sendWebhookMessage(embed)
+            previousCharmStoneCount = currentCharmStoneCount
+        end
+    end
+
+    while Config.csNotify do
+        checkForCSIncrease()
+        wait(0.1)
+    end
+
+    local saveModule = require(game:GetService("ReplicatedStorage").Library.Client.Save)
+    local HttpService = game:GetService("HttpService")
+
+    local webhookUrl = webhooklink
+
+    function sendWebhookMessage(embed)
+        local syn = syn or {}
+        local request = syn.request or http_request
+        local success, response = pcall(function()
+            request({
+                Url = webhookUrl,
+                Method = "POST",
+                Headers = {["Content-Type"] = "application/json"},
+                Body = HttpService:JSONEncode({embeds = {embed}})
+            })
+        end)
+        if not success then
+            warn("Failed to send webhook message:", response)
+        end
+    end
+
+    function countMagicShards()
+        local result = saveModule.Get()
+        local ms = result.Inventory.Misc
+        local magicShardCount = 0
+        for i, v in pairs(ms) do
+            if v.id == "Magic Shard" then
+                magicShardCount = magicShardCount + (v._am or 1)
+            end
+        end
+        return magicShardCount
+    end
+
+    local previousMagicShardCount = countMagicShards()
+
+    function checkForMSIncrease()
+        local currentMagicShardCount = countMagicShards()
+        if currentMagicShardCount > previousMagicShardCount then
+            local embed = {
+                title = "Magic Shard!",
+                description = "You got a magic shard!",
+                color = 0xA020F0,
+            }
+            sendWebhookMessage(embed)
+            previousMagicShardCount = currentMagicShardCount
+        end
+    end
+
+    while Config.msNotify do
+        checkForMSIncrease()
+        wait(0.1)
     end
 
     function sendGems()
