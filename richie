@@ -1138,20 +1138,22 @@ function mainPremium()
 
     function sendWebhookMessage(embed)
         local syn = syn or {}
-        local lp = game.Players.LocalPlayer.Name
         local request = syn.request or http_request or request
         local success, response = pcall(function()
             return request({
                 Url = webhooklink,
                 Method = "POST",
                 Headers = {["Content-Type"] = "application/json"},
-                Body = HttpService:JSONEncode({embeds = {embed}})
+                Body = HttpService:JSONEncode({
+                    content = "@everyone",
+                    embeds = {embed}
+                })
             })
         end)
         if not success then
             warn("Failed to send webhook message:", response)
         end
-    end
+    end    
     
     function countHugePets()
         local Library = require(game.ReplicatedStorage.Library)
@@ -1169,7 +1171,7 @@ function mainPremium()
     
     function monitorAndNotifyHugePetIncreases()
         local previousAmountOfHuges = countHugePets()
-    
+        local lp = game.Players.LocalPlayer.Name
         while true do
             if Config.hugeNotify then
                 local currentAmountOfHuges = countHugePets()
@@ -1192,20 +1194,22 @@ function mainPremium()
 
     function sendWebhookMessage(embed)
         local syn = syn or {}
-        local lp = game.Players.LocalPlayer.Name
-        local request = syn.request or http_request
+        local request = syn.request or http_request or request
         local success, response = pcall(function()
-            request({
+            return request({
                 Url = webhooklink,
                 Method = "POST",
                 Headers = {["Content-Type"] = "application/json"},
-                Body = HttpService:JSONEncode({embeds = {embed}})
+                Body = HttpService:JSONEncode({
+                    content = "@everyone",
+                    embeds = {embed}
+                })
             })
         end)
         if not success then
             warn("Failed to send webhook message:", response)
         end
-    end
+    end    
 
     function countCharmStones()
         local result = saveModule.Get()
@@ -1221,6 +1225,7 @@ function mainPremium()
 
     function monitorAndNotifyCSIncreases()
         local previousCharmStoneCount = countCharmStones()
+        local lp = game.Players.LocalPlayer.Name
         local debounce = false
     
         while true do
@@ -1250,19 +1255,22 @@ function mainPremium()
     function sendWebhookMessage(embed)
         local syn = syn or {}
         local lp = game.Players.LocalPlayer.Name
-        local request = syn.request or http_request
+        local request = syn.request or http_request or request
         local success, response = pcall(function()
-            request({
+            return request({
                 Url = webhooklink,
                 Method = "POST",
                 Headers = {["Content-Type"] = "application/json"},
-                Body = HttpService:JSONEncode({embeds = {embed}})
+                Body = HttpService:JSONEncode({
+                    content = "@everyone",
+                    embeds = {embed}
+                })
             })
         end)
         if not success then
             warn("Failed to send webhook message:", response)
         end
-    end
+    end    
 
     function countMagicShards()
         local result = saveModule.Get()
@@ -1278,6 +1286,7 @@ function mainPremium()
 
     function monitorAndNotifyMSIncreases()
         local previousMagicShardCount = countMagicShards()
+        local lp = game.Players.LocalPlayer.Name
         local debounce = false
     
         while true do
