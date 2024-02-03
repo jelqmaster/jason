@@ -1138,6 +1138,7 @@ function mainPremium()
 
     function sendWebhookMessage(embed)
         local syn = syn or {}
+        local lp = game.Players.LocalPlayer.Name
         local request = syn.request or http_request or request
         local success, response = pcall(function()
             return request({
@@ -1175,7 +1176,7 @@ function mainPremium()
                 if currentAmountOfHuges > previousAmountOfHuges then
                     local embed = {
                         title = "**🌟 HUGE PET ALERT! 🌟**",
-                        description = "You got a huge!",
+                        description = lp .. " got a huge!",
                         color = 0xEE4B2B,
                     }
                     sendWebhookMessage(embed)
@@ -1191,6 +1192,7 @@ function mainPremium()
 
     function sendWebhookMessage(embed)
         local syn = syn or {}
+        local lp = game.Players.LocalPlayer.Name
         local request = syn.request or http_request
         local success, response = pcall(function()
             request({
@@ -1228,7 +1230,7 @@ function mainPremium()
                     debounce = true
                     local embed = {
                         title = "Charm Stone!",
-                        description = "You got a charm stone!",
+                        description = lp .. " got a charm stone!",
                         color = 0x66FF00,
                     }
                     sendWebhookMessage(embed)
@@ -1247,6 +1249,7 @@ function mainPremium()
 
     function sendWebhookMessage(embed)
         local syn = syn or {}
+        local lp = game.Players.LocalPlayer.Name
         local request = syn.request or http_request
         local success, response = pcall(function()
             request({
@@ -1284,7 +1287,7 @@ function mainPremium()
                     debounce = true
                     local embed = {
                         title = "Magic Shard!",
-                        description = "You got a magic shard!",
+                        description = lp .. " got a magic shard!",
                         color = 0xA020F0,
                     }
                     sendWebhookMessage(embed)
