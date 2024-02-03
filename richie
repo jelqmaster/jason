@@ -64,6 +64,15 @@ function mainPremium()
         }
     )
 
+    local Egg =
+        Window:MakeTab(
+        {
+            Name = "Auto Egg",
+            Icon = "rbxassetid://4483345998",
+            PremiumOnly = false
+        }
+    )
+
     local Merchant =
         Window:MakeTab(
         {
@@ -323,6 +332,66 @@ function mainPremium()
         }
     )
 
+    eggNames = {}
+
+    for _, v in pairs(game.ReplicatedStorage.__DIRECTORY.Eggs["Zone Eggs"]:GetDescendants()) do
+        if v:IsA("ModuleScript") then
+            local nameStr = v.Name:match("(%d+) | (.+)")
+            if nameStr then
+                local num, name = v.Name:match("(%d+) | (.+)")
+                if num and name then
+                    num = tonumber(num)
+                    eggNames[num] = name
+                    print(name)
+                end
+            end
+        end
+    end
+
+    dropdownOptions = {}
+
+    for num, name in pairs(eggNames) do
+        table.insert(dropdownOptions, name)
+    end
+
+    Egg:AddDropdown({
+        Name = "Eggs",
+        Default = "None",
+        Options = dropdownOptions,
+        Callback = function(egg)
+            selectedEgg = egg
+        end    
+    })
+
+    Egg:AddTextbox({
+        Name = "Egg Hatch Amount",
+        Default = "",
+        TextDisappear = false,
+        Callback = function(eggamt)
+            openAmount = tonumber(eggamt)
+        end	  
+    })
+
+    Egg:AddToggle(
+        {
+            Name = "Auto Hatch",
+            Default = false,
+            Callback = function(v)
+                Config.autoHatch = v
+                spawn(autoHatch)
+            end
+        }
+    )
+
+    Egg:AddButton(
+        {
+            Name = "Remove Egg Animation",
+            Callback = function()
+                noEggAnimation()
+            end
+        }
+    )
+
     Merchant:AddButton(
         {
             Name = "Auto Merchant",
@@ -449,15 +518,6 @@ function mainPremium()
             Name = "AntiAFK",
             Callback = function()
                 antiAFK()
-            end
-        }
-    )
-
-    Misc:AddButton(
-        {
-            Name = "Remove Egg Animation",
-            Callback = function()
-                noEggAnimation()
             end
         }
     )
@@ -809,6 +869,17 @@ function mainPremium()
                     end
                 end
             end
+        end
+    end
+
+    function autoHatch()
+        while task.wait() and Config.autoHatch do
+            local args = {
+                [1] = selectedEgg,
+                [2] = openAmount
+            }
+            
+            game:GetService("ReplicatedStorage").Network.Eggs_RequestPurchase:InvokeServer(unpack(args))        
         end
     end
 
