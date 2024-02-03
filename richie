@@ -136,6 +136,15 @@ function mainPremium()
         }
     )
 
+    local Sniper =
+        Window:MakeTab(
+        {
+            Name = "Booth Sniper",
+            Icon = "rbxassetid://4483345998",
+            PremiumOnly = false
+        }
+    )
+
     Info:AddParagraph("BEWARE!","If you paid real money or more than 1m gems for this script you got scammed.")
     Info:AddLabel("https://discord.gg/HXZtG92k")
     Info:AddButton({
@@ -789,6 +798,19 @@ function mainPremium()
             Callback = function(v)
                 Config.autoIndex = v
                 spawn(autoIndex)
+            end
+        }
+    )
+
+    Sniper:AddParagraph("READ ME!","Will buy everything that cost 1 gem.")
+
+    Sniper:AddToggle(
+        {
+            Name = "Booth Sniper",
+            Default = false,
+            Callback = function(v)
+                Config.boothSniper = v
+                spawn(boothSniper)
             end
         }
     )
@@ -1900,6 +1922,38 @@ function autoIndex()
         else
         end
         wait(1)
+    end
+end
+
+function boothSniper()
+    while task.wait() and Config.boothSniper do
+        local Players = game:GetService("Players")
+        local LocalPlayer = Players.LocalPlayer
+
+        for _, player in ipairs(Players:GetPlayers()) do
+            if player ~= LocalPlayer then
+                local userId = player.UserId
+
+                for _, v in pairs(game.Workspace.__THINGS.Booths:GetDescendants()) do
+                    if v:IsA("Frame") and v.Parent.Name == "PetScroll" then
+                        local buy = v:FindFirstChild("Buy")
+                        if buy then
+                            local cost = buy:FindFirstChild("Cost")
+                            if cost and cost.Text == "1" then
+                                local args = {
+                                    [1] = userId,
+                                    [2] = v.Name
+                                }
+
+                                game:GetService("ReplicatedStorage").Network.Booths_RequestPurchase:InvokeServer(
+                                    unpack(args)
+                                )
+                            end
+                        end
+                    end
+                end
+            end
+        end
     end
 end
 end
