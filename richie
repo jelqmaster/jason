@@ -802,25 +802,7 @@ function mainPremium()
         }
     )
 
-    Sniper:AddParagraph("READ ME!","Will buy everything that is at the price you set, max price is 999.")
-
-    Sniper:AddTextbox({
-        Name = "Price",
-        Default = "",
-        TextDisappear = false,
-        Callback = function(price)
-            local selectedPrice = tonumber(price)
-            if selectedPrice > 999 then
-                OrionLib:MakeNotification({
-                    Name = "Error!",
-                    Content = "You cant go higher than 999.",
-                    Image = "rbxassetid://4483345998",
-                    Time = 5
-                })
-                return
-            end
-        end	  
-    })    
+    Sniper:AddParagraph("READ ME!","Will buy everything that cost 1 gem.")
 
     Sniper:AddToggle(
         {
@@ -1947,7 +1929,6 @@ function boothSniper()
     while task.wait() and Config.boothSniper do
         local Players = game:GetService("Players")
         local LocalPlayer = Players.LocalPlayer
-        local price = tostring(selectedPrice)
 
         if not LocalPlayer then return end
 
@@ -1966,7 +1947,7 @@ function boothSniper()
                         local buy = v:FindFirstChild("Buy")
                         if buy then
                             local cost = buy:FindFirstChild("Cost")
-                            if cost and cost.Text == price then
+                            if cost and cost.Text == "1" then
                                 local args = {
                                     [1] = userId,
                                     [2] = v.Name
